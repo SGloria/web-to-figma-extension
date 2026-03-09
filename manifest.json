@@ -10,21 +10,20 @@
     "storage"
   ],
   "background": {
-    "service_worker": "background.js",
-    "type": "module"
+    "service_worker": "background.js"
   },
   "icons": {
-    "16": "logo/icon16.png",
-    "48": "logo/icon48.png",
-    "128": "logo/icon128.png"
+    "16": "logo/logo16.png",
+    "48": "logo/logo48.png",
+    "128": "logo/logo128.png"
   },
   "action": {
     "default_title": "Web to Figma",
     "default_popup": "panel.html",
     "default_icon": {
-      "16": "logo/icon16.png",
-      "48": "logo/icon48.png",
-      "128": "logo/icon128.png"
+      "16": "logo/logo16.png",
+      "48": "logo/logo48.png",
+      "128": "logo/logo128.png"
     }
   },
   "web_accessible_resources": [
@@ -32,7 +31,7 @@
       "resources": [
         "capture.js",
         "runner.js",
-        "logo/icon16.png"
+        "logo/logo16.png"
       ],
       "matches": [
         "<all_urls>"

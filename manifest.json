@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "Web to Figma",
+  "version": "1.0.0",
+  "description": "网页秒变设计稿，一键导入 Figma - by 板栗alive",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "downloads",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "icons": {
+    "16": "logo/icon16.png",
+    "48": "logo/icon48.png",
+    "128": "logo/icon128.png"
+  },
+  "action": {
+    "default_title": "Web to Figma",
+    "default_popup": "panel.html",
+    "default_icon": {
+      "16": "logo/icon16.png",
+      "48": "logo/icon48.png",
+      "128": "logo/icon128.png"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "capture.js",
+        "runner.js",
+        "logo/icon16.png"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}

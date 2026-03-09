@@ -2,191 +2,200 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Web to Figma</title>
   <style>
-    :root {
-      --bg: #f8fafc;
-      --surface: #fff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --primary: #0f172a;
-      --primary-hover: #1e293b;
-      --accent: #6366f1;
-      --radius: 10px;
-    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      min-width: 300px;
-      background: var(--bg);
-      font-family: system-ui, -apple-system, sans-serif;
+      width: 260px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: 13px;
-      color: var(--text);
+      color: #1a1a1a;
+      background: #fff;
       -webkit-font-smoothing: antialiased;
     }
-    .app { padding: 16px; }
-
-    /* Header */
+    
+    .container { padding: 16px; }
+    
     .header {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 14px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
     }
-    .logo { width: 26px; height: 26px; border-radius: 6px; }
-    .title { font-size: 14px; font-weight: 600; }
-
-    /* Options */
-    .options { display: grid; gap: 10px; margin-bottom: 12px; }
-    .opt {
+    
+    .logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+    }
+    
+    .title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    
+    .settings {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    
+    .setting-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 10px 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: border-color .15s, box-shadow .15s;
     }
-    .opt:hover { border-color: #cbd5e1; box-shadow: 0 2px 6px rgba(0,0,0,.04); }
-    .opt-label { font-weight: 500; }
-
-    /* Switch */
-    .switch { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
-    .switch input { position: absolute; opacity: 0; width: 0; height: 0; }
-    .track {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border-radius: 999px;
-      background: #cbd5e1;
-      transition: background .2s;
-      cursor: pointer;
+    
+    .setting-label {
+      font-size: 13px;
+      color: #333;
     }
-    .track::after {
+    
+    .toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+    }
+    
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: #ddd;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .toggle-track::after {
       content: "";
       position: absolute;
       top: 2px;
       left: 2px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
+      width: 16px;
+      height: 16px;
       background: #fff;
-      box-shadow: 0 1px 3px rgba(0,0,0,.15);
-      transition: transform .2s;
+      border-radius: 50%;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
     }
-    .switch input:checked + .track { background: var(--accent); }
-    .switch input:checked + .track::after { transform: translateX(18px); }
-
-    /* Select */
-    .sel {
+    
+    .toggle input:checked + .toggle-track {
+      background: #333;
+    }
+    
+    .toggle input:checked + .toggle-track::after {
+      transform: translateX(16px);
+    }
+    
+    .select {
       appearance: none;
-      min-width: 80px;
-      padding: 5px 26px 5px 10px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-      background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2364748b'/%3E%3C/svg%3E") no-repeat right 8px center;
-      border: 1px solid var(--border);
-      border-radius: 6px;
+      padding: 4px 24px 4px 8px;
+      font-size: 12px;
+      color: #333;
+      background: #f5f5f5 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23666'/%3E%3C/svg%3E") no-repeat right 8px center;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
     }
-    .sel:focus { outline: none; border-color: var(--accent); }
-
-    /* Tip */
-    .tip {
-      margin-bottom: 12px;
-      padding: 10px 12px;
-      font-size: 12px;
-      line-height: 1.5;
-      color: var(--muted);
-      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-      border-radius: 8px;
-      border-left: 3px solid var(--accent);
+    
+    .select:focus {
+      outline: 1px solid #333;
     }
-
-    /* Button */
+    
+    .hint {
+      margin-bottom: 14px;
+      font-size: 11px;
+      line-height: 1.5;
+      color: #888;
+    }
+    
     .btn {
       width: 100%;
-      padding: 11px 16px;
-      font-size: 14px;
-      font-weight: 600;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 500;
       color: #fff;
-      background: var(--primary);
+      background: #333;
       border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: background .15s, transform .1s, box-shadow .2s;
-    }
-    .btn:hover:not(:disabled) { background: var(--primary-hover); box-shadow: 0 6px 16px rgba(15,23,42,.18); }
-    .btn:active:not(:disabled) { transform: translateY(1px); }
-    .btn:disabled { opacity: .55; cursor: not-allowed; }
-
-    /* Status */
-    .msg {
-      min-height: 18px;
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--muted);
-      text-align: center;
-    }
-    .msg:not(:empty) {
-      padding: 8px 10px;
-      background: var(--surface);
       border-radius: 6px;
-      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
     }
-
-    /* Footer */
-    .foot {
+    
+    .btn:hover:not(:disabled) {
+      background: #222;
+    }
+    
+    .btn:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+    
+    .status {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #666;
+      text-align: center;
+      min-height: 14px;
+    }
+    
+    .footer {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
     }
-    .by { font-size: 11px; color: var(--muted); }
-    .gh {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 26px;
-      height: 26px;
-      color: var(--text);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      transition: border-color .15s, transform .1s;
+    
+    .author {
+      font-size: 11px;
+      color: #aaa;
     }
-    .gh:hover { border-color: #94a3b8; }
-    .gh:active { transform: scale(.94); }
-    .gh svg { width: 14px; height: 14px; }
+    
+    .github {
+      color: #aaa;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    
+    .github:hover {
+      color: #333;
+    }
+    
+    .github svg {
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
   </style>
 </head>
 <body>
-  <main class="app">
+  <main class="container">
     <header class="header">
       <img class="logo" src="logo/logo48.png" alt="" />
       <h1 class="title">Web to Figma</h1>
     </header>
 
-    <section class="options">
-      <label class="opt" for="proxy">
-        <span class="opt-label">图片代理</span>
-        <span class="switch">
+    <section class="settings">
+      <label class="setting-row">
+        <span class="setting-label">图片代理</span>
+        <span class="toggle">
           <input id="proxy" type="checkbox" />
-          <span class="track"></span>
+          <span class="toggle-track"></span>
         </span>
       </label>
-      <label class="opt" for="threads">
-        <span class="opt-label">并发线程</span>
-        <select id="threads" class="sel">
+      <label class="setting-row">
+        <span class="setting-label">并发线程</span>
+        <select id="threads" class="select">
           <option value="4">4</option>
           <option value="6">6</option>
           <option value="8" selected>8</option>
@@ -198,15 +207,14 @@
       </label>
     </section>
 
-    <p class="tip">代理模式可抓取跨域图片，避免资源丢失；线程数越高速度越快，但可能影响稳定性。</p>
+    <p class="hint">开启代理可抓取跨域图片；线程越高速度越快，但可能影响稳定性</p>
 
-    <button id="run" class="btn" type="button">一键采集</button>
+    <button id="run" class="btn" type="button">开始采集</button>
+    <p id="msg" class="status" aria-live="polite"></p>
 
-    <p id="msg" class="msg" aria-live="polite"></p>
-
-    <footer class="foot">
-      <span class="by">板栗alive</span>
-      <a class="gh" href="https://github.com/SGloria" target="_blank" rel="noopener" title="GitHub">
+    <footer class="footer">
+      <span class="author">author：板栗alive</span>
+      <a class="github" href="https://github.com/SGloria" target="_blank" rel="noopener" title="GitHub">
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
         </svg>

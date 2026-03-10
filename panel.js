@@ -35,11 +35,18 @@ $run.addEventListener('click', () => {
   setBusy(true);
   showMsg('');
   chrome.runtime.sendMessage({ type: 'FIGMA_CAPTURE_START' }, res => {
-    setBusy(false);
     const err = chrome.runtime.lastError;
-    if (err) { showMsg('出错了：' + err.message); return; }
-    if (!res?.ok) { showMsg('出错了：' + (res?.error || '未知问题')); return; }
-    showMsg('完成！文件已下载');
-    setTimeout(() => window.close(), 800);
+    if (err) { 
+      setBusy(false);
+      showMsg('出错了：' + err.message); 
+      return; 
+    }
+    if (!res?.ok) { 
+      setBusy(false);
+      showMsg('出错了：' + (res?.error || '未知问题')); 
+      return; 
+    }
+    // 成功后关闭弹窗，工具栏会在页面上显示
+    window.close();
   });
 });

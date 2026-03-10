@@ -3,13 +3,13 @@
  * @author 板栗alive
  */
 
-const WORLD = 'ISOLATED';
+const WORLD = 'MAIN';
 const CAPTURE_FILE = 'capture.js';
-const RUNNER_FILE = 'runner.js';
 const CONCURRENCY_KEY = 'proxyFetchConcurrency';
+const PROXY_KEY = 'enableAssetProxyFetch';
 const ALLOWED_CONCURRENCY = new Set([4, 6, 8, 10, 12, 16, 20]);
 const DEFAULT_CONCURRENCY = 8;
-const FETCH_TIMEOUT_MS = 5000;
+const FETCH_TIMEOUT_MS = 8000;
 
 const proxyQueue = [];
 const proxyInFlight = new Map();
@@ -27,26 +27,6 @@ async function injectScript(tabId, file) {
     target: { tabId },
     world: WORLD,
     files: [file]
-  });
-}
-
-async function runCapture(tabId) {
-  await injectScript(tabId, CAPTURE_FILE);
-  await sleep(100);
-  const [{ result }] = await chrome.scripting.executeScript({
-    target: { tabId },
-    world: WORLD,
-    files: [RUNNER_FILE]
-  });
-  return result;
-}
-
-function saveResult(data) {
-  const json = JSON.stringify(data, null, 2);
-  const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
-  const filename = 'figma-capture-' + Date.now() + '.json';
-  chrome.downloads.download({ url, filename, saveAs: true }, () => {
-    setTimeout(() => URL.revokeObjectURL(url), 3000);
   });
 }
 
@@ -137,6 +117,7 @@ async function proxyFetch(url) {
   return promise;
 }
 
+// 处理采集请求 - 注入 capture.js 并显示工具栏
 chrome.runtime.onMessage.addListener((msg, sender, respond) => {
   if (msg?.type !== 'FIGMA_CAPTURE_START') return;
   
@@ -145,10 +126,21 @@ chrome.runtime.onMessage.addListener((msg, sender, respond) => {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (!tab?.id) throw new Error('No active tab');
       
-      const result = await runCapture(tab.id);
-      if (!result) throw new Error('Capture returned empty');
+      // 注入 capture.js
+      await injectScript(tab.id, CAPTURE_FILE);
+      await sleep(100);
       
-      saveResult(result);
+      // 调用 captureForDesign 显示工具栏
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        world: WORLD,
+        func: () => {
+          if (window.figma?.captureForDesign) {
+            window.figma.captureForDesign({ selector: 'body' });
+          }
+        }
+      });
+      
       respond({ ok: true });
     } catch (e) {
       console.error('Capture failed:', e);
@@ -159,6 +151,7 @@ chrome.runtime.onMessage.addListener((msg, sender, respond) => {
   return true;
 });
 
+// 处理图片代理请求
 chrome.runtime.onMessage.addListener((msg, sender, respond) => {
   if (msg?.type !== 'FIGMA_CAPTURE_FETCH_ASSET' || !msg.url) return;
   

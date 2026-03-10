@@ -31,7 +31,6 @@
     {
       "resources": [
         "capture.js",
-        "runner.js",
         "logo/logo16.png"
       ],
       "matches": [

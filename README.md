@@ -46,6 +46,10 @@
 
 **板栗alive** — [@SGloria](https://github.com/SGloria)
 
+## 致谢
+
+感谢 **白老师** ([@yuqibai88](https://github.com/yuqibai88)) 设计的简约 Logo，让这个小工具更加完整！
+
 ## License
 
 MIT License

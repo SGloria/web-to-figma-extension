@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Web to Figma",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "网页秒变设计稿，一键导入 Figma - by 板栗alive",
   "permissions": [
     "activeTab",

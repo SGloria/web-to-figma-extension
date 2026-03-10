@@ -1,1 +1,179 @@
-function a0_0x5257(_0x45631d,_0x437349){_0x45631d=_0x45631d-0xa7;const _0x2f14a1=a0_0x2f14();let _0x52577a=_0x2f14a1[_0x45631d];return _0x52577a;}const a0_0x585124=a0_0x5257;(function(_0x289a45,_0x2302fd){const _0x2a01e2=a0_0x5257,_0x41accf=_0x289a45();while(!![]){try{const _0x48e3ea=parseInt(_0x2a01e2(0xb1))/0x1*(parseInt(_0x2a01e2(0xcd))/0x2)+parseInt(_0x2a01e2(0xda))/0x3+parseInt(_0x2a01e2(0xbe))/0x4+-parseInt(_0x2a01e2(0xbb))/0x5*(parseInt(_0x2a01e2(0xc1))/0x6)+-parseInt(_0x2a01e2(0xe4))/0x7*(parseInt(_0x2a01e2(0xd6))/0x8)+-parseInt(_0x2a01e2(0xc8))/0x9*(parseInt(_0x2a01e2(0xe3))/0xa)+-parseInt(_0x2a01e2(0xec))/0xb*(-parseInt(_0x2a01e2(0xcf))/0xc);if(_0x48e3ea===_0x2302fd)break;else _0x41accf['push'](_0x41accf['shift']());}catch(_0xb7b292){_0x41accf['push'](_0x41accf['shift']());}}}(a0_0x2f14,0xe870b));const WORLD=a0_0x585124(0xd5),CAPTURE_FILE=a0_0x585124(0xf5),RUNNER_FILE=a0_0x585124(0xe6),TOOLBAR_FILE=a0_0x585124(0xb4),FIGMA_CAPTURE_CONCURRENCY_KEY=a0_0x585124(0xac),FIGMA_CAPTURE_ALLOWED_CONCURRENCY=new Set([0x4,0x6,0x8,0xa,0xc,0x10,0x14]),FIGMA_CAPTURE_DEFAULT_CONCURRENCY=0x8,FIGMA_CAPTURE_PROXY_SESSION_KEY=a0_0x585124(0xf3),FIGMA_CAPTURE_PROXY_DIAG_KEY='figmaCaptureProxyDiagnosticsV1',FIGMA_CAPTURE_PROXY_MAX_DIAG=0x1f4,FIGMA_CAPTURE_FETCH_TIMEOUT_MS=0x1f40,figmaProxyQueue=[],figmaProxyInFlight=new Map(),figmaProxyMemCache=new Map();let figmaProxyActive=0x0,figmaProxyMaxConcurrency=FIGMA_CAPTURE_DEFAULT_CONCURRENCY,figmaProxySessionLoaded=![],figmaProxySessionCache={},figmaProxyDiagnostics=[];function sleep(_0x9ca46){return new Promise(_0x121d2b=>setTimeout(_0x121d2b,_0x9ca46));}async function injectScriptFile(_0x1be896,_0x490e3a){const _0x199a60=a0_0x585124;await chrome[_0x199a60(0xbc)]['executeScript']({'target':{'tabId':_0x1be896},'world':WORLD,'files':[_0x490e3a]});}async function runCapture(_0x45940b){const _0x139524=a0_0x585124;await injectScriptFile(_0x45940b,CAPTURE_FILE),await sleep(0x12c);const [{result:_0x430285}]=await chrome[_0x139524(0xbc)][_0x139524(0xee)]({'target':{'tabId':_0x45940b},'world':WORLD,'files':[RUNNER_FILE]});return _0x430285;}function saveResult(_0x2e7985){const _0xa1da49=a0_0x585124,_0x525790=JSON[_0xa1da49(0xd3)](_0x2e7985,null,0x2),_0x14aa2b=URL[_0xa1da49(0xe2)](new Blob([_0x525790],{'type':'application/json'})),_0xe0f33e=_0xa1da49(0xa7)+Date[_0xa1da49(0xad)]()+_0xa1da49(0xb2);chrome[_0xa1da49(0xbd)][_0xa1da49(0xc3)]({'url':_0x14aa2b,'filename':_0xe0f33e,'saveAs':!![]},()=>{const _0x33af33=_0xa1da49;setTimeout(()=>URL[_0x33af33(0xdd)](_0x14aa2b),0xbb8);});}function normalizeConcurrency(_0x5a1ed3){const _0x3d22a6=a0_0x585124;if(_0x5a1ed3===_0x3d22a6(0xce)||_0x5a1ed3==='∞')return Number['POSITIVE_INFINITY'];const _0x1f6740=Number(_0x5a1ed3);if(FIGMA_CAPTURE_ALLOWED_CONCURRENCY[_0x3d22a6(0xed)](_0x1f6740))return _0x1f6740;return FIGMA_CAPTURE_DEFAULT_CONCURRENCY;}function concurrencyLabel(){const _0x181bac=a0_0x585124;return Number['isFinite'](figmaProxyMaxConcurrency)?String(figmaProxyMaxConcurrency):_0x181bac(0xce);}async function loadConcurrencyConfig(){const _0x49d8c2=a0_0x585124;try{const _0x518e4a=await chrome[_0x49d8c2(0xea)]['local'][_0x49d8c2(0xab)]({[FIGMA_CAPTURE_CONCURRENCY_KEY]:String(FIGMA_CAPTURE_DEFAULT_CONCURRENCY)});figmaProxyMaxConcurrency=normalizeConcurrency(_0x518e4a?.[FIGMA_CAPTURE_CONCURRENCY_KEY]);}catch{figmaProxyMaxConcurrency=FIGMA_CAPTURE_DEFAULT_CONCURRENCY;}}chrome['storage'][a0_0x585124(0xef)][a0_0x585124(0xc6)]((_0x34e4c2,_0x333a97)=>{const _0x1c39a5=a0_0x585124;if(_0x333a97!==_0x1c39a5(0xc5)||!_0x34e4c2||!_0x34e4c2[FIGMA_CAPTURE_CONCURRENCY_KEY])return;figmaProxyMaxConcurrency=normalizeConcurrency(_0x34e4c2[FIGMA_CAPTURE_CONCURRENCY_KEY][_0x1c39a5(0xdc)]),pumpProxyQueue();});function pushDiag(_0x505bd3){const _0x410e7e=a0_0x585124;figmaProxyDiagnostics['push']({'ts':Date[_0x410e7e(0xad)](),..._0x505bd3}),figmaProxyDiagnostics['length']>FIGMA_CAPTURE_PROXY_MAX_DIAG&&(figmaProxyDiagnostics=figmaProxyDiagnostics[_0x410e7e(0xb6)](-FIGMA_CAPTURE_PROXY_MAX_DIAG)),chrome?.[_0x410e7e(0xea)]?.[_0x410e7e(0xca)]&&chrome[_0x410e7e(0xea)][_0x410e7e(0xca)][_0x410e7e(0xf0)]({[FIGMA_CAPTURE_PROXY_DIAG_KEY]:figmaProxyDiagnostics})[_0x410e7e(0xd1)](()=>{});}async function loadProxySession(){const _0x94c798=a0_0x585124;if(figmaProxySessionLoaded)return;figmaProxySessionLoaded=!![];if(!chrome?.[_0x94c798(0xea)]?.[_0x94c798(0xca)])return;try{const _0x4bd778=await chrome[_0x94c798(0xea)]['session'][_0x94c798(0xab)]({[FIGMA_CAPTURE_PROXY_SESSION_KEY]:{},[FIGMA_CAPTURE_PROXY_DIAG_KEY]:[]});figmaProxySessionCache=_0x4bd778?.[FIGMA_CAPTURE_PROXY_SESSION_KEY]||{},figmaProxyDiagnostics=Array[_0x94c798(0xb7)](_0x4bd778?.[FIGMA_CAPTURE_PROXY_DIAG_KEY])?_0x4bd778[FIGMA_CAPTURE_PROXY_DIAG_KEY]:[];}catch{figmaProxySessionCache={},figmaProxyDiagnostics=[];}}function a0_0x2f14(){const _0xc795e5=['onMessage','capture.js','figma-capture-','FIGMA_CAPTURE_START','tabs','Toolbar\x20inject\x20failed:','get','proxyFetchConcurrency','now','length','action','delete','19iYWaqv','.json','toISOString','inpage-toolbar.js','Capture\x20failed:','slice','isArray','FIGMA_CAPTURE_FETCH_ASSET','proxy-cache-memory','signal','75515IKOzCd','scripting','downloads','1223100zqBMfl','application/octet-stream','reject','138VFArQj','type','download','proxy-fetch','local','addListener','HTTP_','341883ebyeKe','query','session','error','filter','146242ZxHVOJ','infinite','11052ijvvQP','FIGMA_CAPTURE_GET_DIAGNOSTICS','catch','omit','stringify','url','ISOLATED','259568TkTGLv','cacheHit','finally','then','1502484yyUmiT','No\x20active\x20tab\x20to\x20capture','newValue','revokeObjectURL','status','resolve','fromCharCode','proxy-cache-session','createObjectURL','270UKgByw','175SQGqfW','miss','runner.js','runtime','content-type','proxy','storage','arrayBuffer','11231aIKBVN','has','executeScript','onChanged','set','size','headers','figmaCaptureProxyAssetCacheV1'];a0_0x2f14=function(){return _0xc795e5;};return a0_0x2f14();}async function persistProxySession(){const _0x6a6236=a0_0x585124;if(!chrome?.['storage']?.[_0x6a6236(0xca)])return;try{await chrome[_0x6a6236(0xea)]['session']['set']({[FIGMA_CAPTURE_PROXY_SESSION_KEY]:figmaProxySessionCache,[FIGMA_CAPTURE_PROXY_DIAG_KEY]:figmaProxyDiagnostics});}catch{}}function enqueueProxyTask(_0x3ee9ef){return new Promise((_0x1df124,_0x294d1b)=>{figmaProxyQueue['push']({'task':_0x3ee9ef,'resolve':_0x1df124,'reject':_0x294d1b}),pumpProxyQueue();});}function pumpProxyQueue(){const _0x5f0161=a0_0x585124;while(figmaProxyActive<figmaProxyMaxConcurrency&&figmaProxyQueue[_0x5f0161(0xae)]){const _0x22609d=figmaProxyQueue['shift']();figmaProxyActive++,Promise[_0x5f0161(0xdf)]()[_0x5f0161(0xd9)](_0x22609d['task'])[_0x5f0161(0xd9)](_0x22609d[_0x5f0161(0xdf)],_0x22609d[_0x5f0161(0xc0)])['finally'](()=>{figmaProxyActive--,pumpProxyQueue();});}}function toBase64(_0x34f923){const _0x1fbe6d=a0_0x585124,_0x5c9334=new Uint8Array(_0x34f923);let _0x1a1a48='';const _0x577e54=0x8000;for(let _0x111472=0x0;_0x111472<_0x5c9334[_0x1fbe6d(0xae)];_0x111472+=_0x577e54){_0x1a1a48+=String[_0x1fbe6d(0xe0)](..._0x5c9334['subarray'](_0x111472,_0x111472+_0x577e54));}return btoa(_0x1a1a48);}async function proxyFetchAsset(_0x4aef15){const _0x4e9b74=a0_0x585124;await loadProxySession();const _0x42b1a0=figmaProxyMemCache[_0x4e9b74(0xab)](_0x4aef15);if(_0x42b1a0)return pushDiag({'url':_0x4aef15,'phase':_0x4e9b74(0xb9),'ok':!![],'status':0xc8}),{'ok':!![],'status':0xc8,'cacheHit':'memory',..._0x42b1a0};const _0x48cf7d=figmaProxySessionCache[_0x4aef15];if(_0x48cf7d)return figmaProxyMemCache[_0x4e9b74(0xf0)](_0x4aef15,_0x48cf7d),pushDiag({'url':_0x4aef15,'phase':_0x4e9b74(0xe1),'ok':!![],'status':0xc8}),{'ok':!![],'status':0xc8,'cacheHit':'session',..._0x48cf7d};if(figmaProxyInFlight[_0x4e9b74(0xed)](_0x4aef15))return figmaProxyInFlight[_0x4e9b74(0xab)](_0x4aef15);const _0x59c51e=enqueueProxyTask(async()=>{const _0x3e6fa7=_0x4e9b74;try{const _0x4b37db=new AbortController(),_0x25e4ef=setTimeout(()=>_0x4b37db['abort'](),FIGMA_CAPTURE_FETCH_TIMEOUT_MS);let _0x47819b;try{_0x47819b=await fetch(_0x4aef15,{'credentials':_0x3e6fa7(0xd2),'signal':_0x4b37db[_0x3e6fa7(0xba)]});}finally{clearTimeout(_0x25e4ef);}if(!_0x47819b['ok'])return pushDiag({'url':_0x4aef15,'phase':_0x3e6fa7(0xc4),'ok':![],'status':_0x47819b[_0x3e6fa7(0xde)],'error':_0x3e6fa7(0xc7)+_0x47819b[_0x3e6fa7(0xde)]}),{'ok':![],'status':_0x47819b[_0x3e6fa7(0xde)],'error':_0x3e6fa7(0xc7)+_0x47819b['status']};const _0x3de9df=_0x47819b[_0x3e6fa7(0xf2)]['get'](_0x3e6fa7(0xe8))||_0x3e6fa7(0xbf),_0x145bbe=toBase64(await _0x47819b[_0x3e6fa7(0xeb)]()),_0x13b220={'contentType':_0x3de9df,'base64':_0x145bbe};return figmaProxyMemCache['set'](_0x4aef15,_0x13b220),figmaProxySessionCache[_0x4aef15]=_0x13b220,persistProxySession(),pushDiag({'url':_0x4aef15,'phase':_0x3e6fa7(0xc4),'ok':!![],'status':_0x47819b['status'],'bytes':_0x145bbe[_0x3e6fa7(0xae)]}),{'ok':!![],'status':_0x47819b['status'],'contentType':_0x3de9df,'base64':_0x145bbe,'cacheHit':_0x3e6fa7(0xe5)};}catch(_0x5f4c2d){const _0x559ce7=String(_0x5f4c2d);return pushDiag({'url':_0x4aef15,'phase':_0x3e6fa7(0xc4),'ok':![],'status':0x0,'error':_0x559ce7}),{'ok':![],'status':0x0,'error':_0x559ce7};}})[_0x4e9b74(0xd8)](()=>{const _0x4fce04=_0x4e9b74;figmaProxyInFlight[_0x4fce04(0xb0)](_0x4aef15);});return figmaProxyInFlight['set'](_0x4aef15,_0x59c51e),_0x59c51e;}chrome[a0_0x585124(0xaf)]['onClicked']['addListener'](async _0x4fea4a=>{const _0x2d254d=a0_0x585124;if(!_0x4fea4a?.['id'])return;try{await injectScriptFile(_0x4fea4a['id'],TOOLBAR_FILE);}catch(_0x299010){console[_0x2d254d(0xcb)](_0x2d254d(0xaa),_0x299010);}}),chrome['runtime']['onMessage']['addListener']((_0x54b280,_0x2d3c55,_0x4c1c36)=>{const _0x4057d3=a0_0x585124;if(!_0x54b280||_0x54b280[_0x4057d3(0xc2)]!==_0x4057d3(0xa8))return;return((async()=>{const _0x2adb51=_0x4057d3;try{const _0x1c139a=await chrome[_0x2adb51(0xa9)][_0x2adb51(0xc9)]({'active':!![],'currentWindow':!![]}),_0x18cda3=_0x1c139a&&_0x1c139a[0x0];if(!_0x18cda3?.['id'])throw new Error(_0x2adb51(0xdb));const _0xc1d8f7=await runCapture(_0x18cda3['id']);if(!_0xc1d8f7)throw new Error('Capture\x20returned\x20empty\x20result');saveResult(_0xc1d8f7),_0x4c1c36({'ok':!![]});}catch(_0x2eb021){console['error'](_0x2adb51(0xb5),_0x2eb021),_0x4c1c36({'ok':![],'error':String(_0x2eb021)});}})()),!![];}),chrome[a0_0x585124(0xe7)][a0_0x585124(0xf4)][a0_0x585124(0xc6)]((_0xca7440,_0x1e0c6e,_0x46c517)=>{const _0x57efaa=a0_0x585124;if(!_0xca7440||_0xca7440[_0x57efaa(0xc2)]!==_0x57efaa(0xb8)||!_0xca7440['url'])return;return((async()=>{const _0x319d1e=_0x57efaa,_0x573571=await proxyFetchAsset(_0xca7440[_0x319d1e(0xd4)]);_0x46c517({..._0x573571,'diagnostics':{'phase':_0x319d1e(0xe9),'cacheHit':_0x573571[_0x319d1e(0xd7)]||null,'queueDepth':figmaProxyQueue[_0x319d1e(0xae)],'activeRequests':figmaProxyActive,'maxConcurrency':concurrencyLabel()}});})()),!![];}),chrome[a0_0x585124(0xe7)][a0_0x585124(0xf4)][a0_0x585124(0xc6)]((_0x3f445f,_0x42f911,_0x1fb34f)=>{const _0x14dc62=a0_0x585124;if(!_0x3f445f||_0x3f445f[_0x14dc62(0xc2)]!==_0x14dc62(0xd0))return;return((async()=>{const _0x54ce79=_0x14dc62;await loadProxySession(),_0x1fb34f({'ok':!![],'diagnostics':{'generatedAt':new Date()[_0x54ce79(0xb3)](),'queueDepth':figmaProxyQueue[_0x54ce79(0xae)],'activeRequests':figmaProxyActive,'inFlight':figmaProxyInFlight[_0x54ce79(0xf1)],'maxConcurrency':concurrencyLabel(),'failures':figmaProxyDiagnostics[_0x54ce79(0xcc)](_0x51a604=>_0x51a604&&_0x51a604['ok']===![])}});})()),!![];}),loadConcurrencyConfig();
+/**
+ * Web to Figma - Background Service Worker
+ * @author 板栗alive
+ */
+
+const WORLD = 'ISOLATED';
+const CAPTURE_FILE = 'capture.js';
+const RUNNER_FILE = 'runner.js';
+const CONCURRENCY_KEY = 'proxyFetchConcurrency';
+const ALLOWED_CONCURRENCY = new Set([4, 6, 8, 10, 12, 16, 20]);
+const DEFAULT_CONCURRENCY = 8;
+const FETCH_TIMEOUT_MS = 5000;
+
+const proxyQueue = [];
+const proxyInFlight = new Map();
+const proxyMemCache = new Map();
+
+let proxyActive = 0;
+let maxConcurrency = DEFAULT_CONCURRENCY;
+
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+async function injectScript(tabId, file) {
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    world: WORLD,
+    files: [file]
+  });
+}
+
+async function runCapture(tabId) {
+  await injectScript(tabId, CAPTURE_FILE);
+  await sleep(100);
+  const [{ result }] = await chrome.scripting.executeScript({
+    target: { tabId },
+    world: WORLD,
+    files: [RUNNER_FILE]
+  });
+  return result;
+}
+
+function saveResult(data) {
+  const json = JSON.stringify(data, null, 2);
+  const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+  const filename = 'figma-capture-' + Date.now() + '.json';
+  chrome.downloads.download({ url, filename, saveAs: true }, () => {
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+  });
+}
+
+function normalizeConcurrency(val) {
+  if (val === 'infinite' || val === '∞') return Infinity;
+  const n = Number(val);
+  return ALLOWED_CONCURRENCY.has(n) ? n : DEFAULT_CONCURRENCY;
+}
+
+async function loadConfig() {
+  try {
+    const data = await chrome.storage.local.get({ [CONCURRENCY_KEY]: String(DEFAULT_CONCURRENCY) });
+    maxConcurrency = normalizeConcurrency(data?.[CONCURRENCY_KEY]);
+  } catch {
+    maxConcurrency = DEFAULT_CONCURRENCY;
+  }
+}
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && changes[CONCURRENCY_KEY]) {
+    maxConcurrency = normalizeConcurrency(changes[CONCURRENCY_KEY].newValue);
+    pumpQueue();
+  }
+});
+
+function enqueueTask(task) {
+  return new Promise((resolve, reject) => {
+    proxyQueue.push({ task, resolve, reject });
+    pumpQueue();
+  });
+}
+
+function pumpQueue() {
+  while (proxyActive < maxConcurrency && proxyQueue.length) {
+    const item = proxyQueue.shift();
+    proxyActive++;
+    Promise.resolve()
+      .then(item.task)
+      .then(item.resolve, item.reject)
+      .finally(() => {
+        proxyActive--;
+        pumpQueue();
+      });
+  }
+}
+
+function toBase64(buffer) {
+  const bytes = new Uint8Array(buffer);
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(binary);
+}
+
+async function proxyFetch(url) {
+  const cached = proxyMemCache.get(url);
+  if (cached) return { ok: true, status: 200, cacheHit: 'memory', ...cached };
+  
+  if (proxyInFlight.has(url)) return proxyInFlight.get(url);
+  
+  const promise = enqueueTask(async () => {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+      
+      let res;
+      try {
+        res = await fetch(url, { credentials: 'omit', signal: controller.signal });
+      } finally {
+        clearTimeout(timeout);
+      }
+      
+      if (!res.ok) return { ok: false, status: res.status, error: 'HTTP_' + res.status };
+      
+      const contentType = res.headers.get('content-type') || 'application/octet-stream';
+      const base64 = toBase64(await res.arrayBuffer());
+      const data = { contentType, base64 };
+      
+      proxyMemCache.set(url, data);
+      return { ok: true, status: res.status, ...data, cacheHit: 'miss' };
+    } catch (e) {
+      return { ok: false, status: 0, error: String(e) };
+    }
+  }).finally(() => proxyInFlight.delete(url));
+  
+  proxyInFlight.set(url, promise);
+  return promise;
+}
+
+chrome.runtime.onMessage.addListener((msg, sender, respond) => {
+  if (msg?.type !== 'FIGMA_CAPTURE_START') return;
+  
+  (async () => {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab?.id) throw new Error('No active tab');
+      
+      const result = await runCapture(tab.id);
+      if (!result) throw new Error('Capture returned empty');
+      
+      saveResult(result);
+      respond({ ok: true });
+    } catch (e) {
+      console.error('Capture failed:', e);
+      respond({ ok: false, error: String(e) });
+    }
+  })();
+  
+  return true;
+});
+
+chrome.runtime.onMessage.addListener((msg, sender, respond) => {
+  if (msg?.type !== 'FIGMA_CAPTURE_FETCH_ASSET' || !msg.url) return;
+  
+  proxyFetch(msg.url).then(result => {
+    respond({
+      ...result,
+      diagnostics: {
+        queueDepth: proxyQueue.length,
+        activeRequests: proxyActive,
+        maxConcurrency: Number.isFinite(maxConcurrency) ? maxConcurrency : 'infinite'
+      }
+    });
+  });
+  
+  return true;
+});
+
+loadConfig();

@@ -10,6 +10,14 @@
 - **直接粘贴** — 采集结果自动复制，在 Figma 中粘贴即可
 - **图片代理** — 支持跨域图片抓取，避免资源丢失
 - **并发控制** — 可调节图片下载速度
+- **动态加载** — 使用 Figma 官方 API，无需本地混淆代码
+
+## 技术实现
+
+本插件使用 Figma 官方的 HTML to Design API：
+- 动态加载 Figma 官方的 capture.js（https://mcp.figma.com/mcp/html-to-design/capture.js）
+- 避免在插件包中包含混淆代码，符合 Chrome Web Store 政策
+- 所有自定义代码都清晰可读
 
 ## 安装
 

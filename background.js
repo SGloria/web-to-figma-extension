@@ -5,6 +5,7 @@
 
 const WORLD = 'MAIN';
 const CAPTURE_FILE = 'capture.js';
+const FIGMA_CAPTURE_URL = 'https://mcp.figma.com/mcp/html-to-design/capture.js';
 const CONCURRENCY_KEY = 'proxyFetchConcurrency';
 const PROXY_KEY = 'enableAssetProxyFetch';
 const ALLOWED_CONCURRENCY = new Set([4, 6, 8, 10, 12, 16, 20]);
@@ -23,11 +24,54 @@ function sleep(ms) {
 }
 
 async function injectScript(tabId, file) {
-  await chrome.scripting.executeScript({
-    target: { tabId },
-    world: WORLD,
-    files: [file]
-  });
+  // 如果是本地文件，直接注入
+  if (file === CAPTURE_FILE && !await isLocalCaptureAvailable()) {
+    // 动态加载 Figma 官方的 capture.js
+    await injectRemoteScript(tabId, FIGMA_CAPTURE_URL);
+  } else {
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      world: WORLD,
+      files: [file]
+    });
+  }
+}
+
+async function isLocalCaptureAvailable() {
+  // 检查本地是否有 capture.js 文件（用于开发测试）
+  try {
+    const url = chrome.runtime.getURL(CAPTURE_FILE);
+    const response = await fetch(url);
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function injectRemoteScript(tabId, url) {
+  // 从远程加载脚本内容
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Failed to fetch script: ${response.status}`);
+    
+    const code = await response.text();
+    
+    // 注入脚本代码
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      world: WORLD,
+      func: (scriptCode) => {
+        const script = document.createElement('script');
+        script.textContent = scriptCode;
+        document.documentElement.appendChild(script);
+        script.remove();
+      },
+      args: [code]
+    });
+  } catch (error) {
+    console.error('Failed to inject remote script:', error);
+    throw error;
+  }
 }
 
 function normalizeConcurrency(val) {
@@ -124,7 +168,16 @@ chrome.runtime.onMessage.addListener((msg, sender, respond) => {
   (async () => {
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (!tab?.id) throw new Error('No active tab');
+      if (!tab?.id) throw new Error('没有找到活动标签页');
+      
+      // 检查是否是特殊页面
+      if (!tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) {
+        throw new Error('无法在此页面上运行，请打开一个普通网页');
+      }
+      
+      if (tab.url.startsWith('edge://') || tab.url.startsWith('about:') || tab.url.startsWith('file://')) {
+        throw new Error('无法在此类页面上运行，请打开一个网页');
+      }
       
       // 注入 capture.js
       await injectScript(tab.id, CAPTURE_FILE);
@@ -144,7 +197,16 @@ chrome.runtime.onMessage.addListener((msg, sender, respond) => {
       respond({ ok: true });
     } catch (e) {
       console.error('Capture failed:', e);
-      respond({ ok: false, error: String(e) });
+      let errorMessage = String(e);
+      
+      // 优化错误信息
+      if (errorMessage.includes('Cannot access')) {
+        errorMessage = '无法在此页面上运行，请打开一个普通网页';
+      } else if (errorMessage.includes('chrome://')) {
+        errorMessage = '无法在浏览器设置页面运行';
+      }
+      
+      respond({ ok: false, error: errorMessage });
     }
   })();
   

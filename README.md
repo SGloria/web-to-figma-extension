@@ -56,7 +56,7 @@
 
 ## 致谢
 
-感谢 **白老师** ([@yuqibai88](https://github.com/yuqibai88)) 设计的简约 Logo，让这个小工具更加完整！
+- **板栗alive** — 项目作者 [@SGloria](https://github.com/SGloria)
 
 ## License
 
